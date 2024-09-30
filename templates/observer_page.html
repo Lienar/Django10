@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Store of tabel games {% endblock %}</title>
+</head>
+
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        <label for = "page_numbers">Выберите количество отображаемых объектов на странице:</label>
+        <input type = "number" id = "page_numbers" name = "page_numbers">
+        <button type="submit"> Send</button>
+        <h4>Количество объектов на странице {{ object_on_page }}</h4>
+    </form>
+
+
+<div class="row">
+    {% for game in page_obj %}
+    <div class="coll-md-4">
+        <h2>{{ game.title }}</h2>
+        {% if game.age_limited == 1 %}
+        <p>Цена: {{ game.cost }} ||  Ограничение по возрасту: Да</p>
+        {% else %}
+        <p>Цена: {{ game.cost }} ||  Ограничение по возрасту: Нет</p>
+        {% endif %}
+        <p>Описание: {{ game.description }} </p>
+    </div>
+    {% endfor %}
+</div>
+
+
+    <nav aria-label="Page navigation" >
+    <h1 align="left">
+        {% if page_obj.has_other_pages %}
+        {% if page_obj.has_previous %}
+        <b><a class="page-link" href="?page={{ page_obj.previous_page_number }}&object_on_page={{ object_on_page }}" aria-label="Previous">
+            <span aria-label="true">&laquo;</span>
+        </a></b>
+        {% else %}
+        <i>
+        <a class="page-link" href="#" aria-label="Previous">
+            <span aria-label="true">&laquo;</span>
+        </a></i>
+        {% endif %}
+    {% endif %}
+
+    {% for i in page_obj.paginator.page_range %}
+        {% if page_obj.number == i %}
+        <i><a class="page-link" href="#"> {{ i }} </a></i>
+        {% else %}
+        <b><a class="page-link" href="?page={{ i }}&object_on_page={{ object_on_page }}"> {{ i }} </a></b>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <b><a class="page-link" href="?page={{ page_obj.next_page_number }}&object_on_page={{ object_on_page }}" aria-label="Next">
+            <span aria-label="true">&raquo;</span>
+        </a></b>
+    {% else %}
+        <i><a class="page-link" href="#" aria-label="Next">
+            <span aria-label="true">&raquo;</span>
+        </a></i>
+    {% endif %}
+    </h1>
+        <h2><b>Страница {{ page_obj.number }} из {{number_of_pages}}</b></h2>
+    </nav>
+</body>
+
